@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Keeper - Personal Notes & Links",
-  description: "A premium pers note saving and link bookmarking application. Keep all your personal thoughts, ideas, and URLs powerfully organized.",
-  keywords: ["pers", "personal", "notes", "bookmarks", "keeper", "productivity", "links", "organizer", "web clippings"],
-  authors: [{ name: "Keeper" }],
+  title: "Notely — Personal Notes & Links",
+  description: "A premium personal note-taking and link bookmarking application. Organize your thoughts, ideas, and URLs effortlessly.",
+  keywords: ["personal", "notes", "bookmarks", "notely", "productivity", "links", "organizer", "web clippings"],
+  authors: [{ name: "Notely" }],
   openGraph: {
-    title: "Keeper - Personal Notes & Links",
-    description: "Your advanced personal note keeping and bookmark app.",
+    title: "Notely — Personal Notes & Links",
+    description: "Your premium personal note-taking and bookmark app.",
     type: "website",
-    siteName: "Keeper",
+    siteName: "Notely",
   },
   icons: {
     icon: "/logo.png",

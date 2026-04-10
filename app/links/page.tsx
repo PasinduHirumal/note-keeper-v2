@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LinksPage() {
   const [mounted, setMounted] = useState(false);
-  const [links, setLinks] = useLocalStorage<SavedLink[]>("keeper-bookmarks", []);
+  const [links, setLinks] = useLocalStorage<SavedLink[]>("notely-bookmarks", []);
   const { toast } = useToast();
 
   const [isAdding, setIsAdding] = useState(false);

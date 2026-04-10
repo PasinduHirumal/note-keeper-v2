@@ -1,10 +1,9 @@
 <div align="center">
 
-# 📝 Keeper — Personal Notes & Links
+# ✨ Notely — Personal Notes & Links
 
 **A premium personal productivity app for capturing notes, saving links, and starring your most important ideas.**
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-note--keeper--v2.vercel.app-6366f1?style=for-the-badge)](https://note-keeper-v2-vt97.vercel.app/notes)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
@@ -55,8 +54,8 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/PasinduHirumal/note-keeper-v2.git
-cd note-keeper-v2
+git clone https://github.com/PasinduHirumal/notely.git
+cd notely
 
 # 2. Install dependencies
 npm install
@@ -72,7 +71,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 📁 Project Structure
 
 ```
-note-keeper-v2/
+notely/
 ├── app/
 │   ├── components/         # Reusable UI components
 │   │   ├── Sidebar.tsx     # Navigation sidebar (with mobile menu)
@@ -99,7 +98,7 @@ note-keeper-v2/
 
 ## 📸 Screenshots
 
-> Try the live app: **[https://note-keeper-v2-vt97.vercel.app/notes](https://note-keeper-v2-vt97.vercel.app/notes)**
+> Coming soon — deploy and capture live screenshots!
 
 ---
 
@@ -127,6 +126,6 @@ See the [LICENSE](./LICENSE) file for full details.
 
 Built with ❤️ using **Next.js** + **Tailwind CSS** + **Framer Motion**
 
-[🚀 View Live Demo](https://note-keeper-v2-vt97.vercel.app/notes) • [⭐ Star on GitHub](https://github.com/PasinduHirumal/note-keeper-v2)
+[⭐ Star on GitHub](https://github.com/PasinduHirumal/notely)
 
 </div>

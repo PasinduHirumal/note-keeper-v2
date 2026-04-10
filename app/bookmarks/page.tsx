@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function StarredNotesPage() {
   const [mounted, setMounted] = useState(false);
-  const [notes, setNotes] = useLocalStorage<Note[]>("keeper-notes", []);
+  const [notes, setNotes] = useLocalStorage<Note[]>("notely-notes", []);
   const { toast } = useToast();
 
   const [isEditing, setIsEditing] = useState(false);

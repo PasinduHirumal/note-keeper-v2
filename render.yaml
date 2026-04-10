@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: note-keeper-v2
+    name: notely
     env: node
     buildCommand: npm install && npm run build
     startCommand: npm run start
