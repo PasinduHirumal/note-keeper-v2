@@ -87,6 +87,14 @@ export default function LinksPage() {
     return link.priority === activeTab;
   });
 
+  // Compute a stable key so AnimatePresence can fade between states
+  const contentKey =
+    links.length === 0
+      ? "empty-all"
+      : filteredLinks.length === 0
+      ? "empty-tab"
+      : "links-grid";
+
   return (
     <div className="p-4 h-full flex flex-col relative w-full">
       <div className="flex justify-between items-end mb-8 w-full max-w-5xl mx-auto">
@@ -121,41 +129,51 @@ export default function LinksPage() {
       />
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
-        {links.length === 0 ? (
-          <EmptyState
-            icon={<BookmarkMinus className="w-12 h-12" />}
-            title="No links saved"
-            description="Click 'Add Link' to save a new web page."
-          />
-        ) : filteredLinks.length === 0 ? (
-          <EmptyState
-            icon={<Filter className="w-10 h-10" />}
-            title="No matching links"
-            description={`You have no links with ${activeTab} priority.`}
-          />
-        ) : (
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <AnimatePresence mode="popLayout">
-              {filteredLinks.map(link => (
-                <motion.div
-                  key={link.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <LinkCard
+        <AnimatePresence mode="wait">
+          {contentKey === "empty-all" ? (
+            <EmptyState
+              key="empty-all"
+              icon={<BookmarkMinus className="w-12 h-12" />}
+              title="No links saved yet"
+              description="Click 'Add Link' to save a new web page."
+            />
+          ) : contentKey === "empty-tab" ? (
+            <EmptyState
+              key="empty-tab"
+              icon={<Filter className="w-10 h-10" />}
+              title="No matching links"
+              description={`You have no ${activeTab} priority links.`}
+            />
+          ) : (
+            <motion.div
+              key="links-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredLinks.map(link => (
+                  <motion.div
                     key={link.id}
-                    link={link}
-                    onEdit={handleEdit}
-                    onDelete={(id) => setLinkToDelete(id)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        )}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <LinkCard
+                      link={link}
+                      onEdit={handleEdit}
+                      onDelete={(id) => setLinkToDelete(id)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <LinkAddModal

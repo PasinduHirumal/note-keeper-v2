@@ -106,6 +106,16 @@ export default function NotesPage() {
     return true; // "all"
   });
 
+  // Compute a stable key so AnimatePresence can fade between states
+  const contentKey =
+    notes.length === 0
+      ? "empty-all"
+      : filteredNotes.length === 0
+      ? searchQuery.trim()
+        ? "empty-search"
+        : "empty-tab"
+      : "notes-grid";
+
   return (
     <div className="p-4 h-full flex flex-col relative w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 w-full max-w-5xl mx-auto gap-4">
@@ -147,49 +157,59 @@ export default function NotesPage() {
       />
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
-        {notes.length === 0 ? (
-          <EmptyState
-            icon={<FileQuestion className="w-12 h-12" />}
-            title="No notes found"
-            description="Click 'New Note' to create your first note."
-          />
-        ) : filteredNotes.length === 0 ? (
-          searchQuery.trim() ? (
+        <AnimatePresence mode="wait">
+          {contentKey === "empty-all" ? (
             <EmptyState
-              icon={<Search className="w-10 h-10" />}
-              title="No matching notes found"
-              description={<>We couldn't find anything matching "{searchQuery}".<br />Try a different search term.</>}
+              key="empty-all"
+              icon={<FileQuestion className="w-12 h-12" />}
+              title="No notes yet"
+              description="Click 'New Note' to create your first note."
             />
-          ) : (
+          ) : contentKey === "empty-search" ? (
             <EmptyState
+              key="empty-search"
+              icon={<Search className="w-10 h-10" />}
+              title="No matching notes"
+              description={<>Nothing matched &ldquo;{searchQuery}&rdquo;.<br />Try a different search term.</>}
+            />
+          ) : contentKey === "empty-tab" ? (
+            <EmptyState
+              key="empty-tab"
               icon={<Inbox className="w-10 h-10" />}
-              title="No notes found"
+              title="No notes here"
               description="There are no notes in this category."
             />
-          )
-        ) : (
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredNotes.map(note => (
-                <motion.div
-                  key={note.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <NoteCard
-                    note={note}
-                    onEdit={openEditor}
-                    onDelete={handleDelete}
-                    onToggleBookmark={handleToggleBookmark}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        )}
+          ) : (
+            <motion.div
+              key="notes-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredNotes.map(note => (
+                  <motion.div
+                    key={note.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <NoteCard
+                      note={note}
+                      onEdit={openEditor}
+                      onDelete={handleDelete}
+                      onToggleBookmark={handleToggleBookmark}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <NoteEditorModal
