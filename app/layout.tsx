@@ -16,8 +16,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Keeper - Notes & Bookmarks",
-  description: "A premium note saving and bookmark application",
+  title: "Keeper - Personal Notes & Links",
+  description: "A premium pers note saving and link bookmarking application. Keep all your personal thoughts, ideas, and URLs powerfully organized.",
+  keywords: ["pers", "personal", "notes", "bookmarks", "keeper", "productivity", "links", "organizer", "web clippings"],
+  authors: [{ name: "Keeper" }],
+  openGraph: {
+    title: "Keeper - Personal Notes & Links",
+    description: "Your advanced personal note keeping and bookmark app.",
+    type: "website",
+    siteName: "Keeper",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 export default function RootLayout({
