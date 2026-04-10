@@ -15,6 +15,7 @@ export default function BookmarksPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [newUrl, setNewUrl] = useState("");
   const [newTitle, setNewTitle] = useState("");
+  const [newPriority, setNewPriority] = useState<"low" | "medium" | "high">("low");
 
   useEffect(() => {
     setMounted(true);
@@ -36,6 +37,7 @@ export default function BookmarksPage() {
       title: newTitle || "",
       url: finalUrl,
       createdAt: Date.now(),
+      priority: newPriority,
     };
     
     setBookmarks([newBookmark, ...bookmarks]);
@@ -43,6 +45,7 @@ export default function BookmarksPage() {
     setIsAdding(false);
     setNewUrl("");
     setNewTitle("");
+    setNewPriority("low");
   };
 
   const handleDelete = (id: string) => {
@@ -124,6 +127,27 @@ export default function BookmarksPage() {
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full py-2 px-3 bg-transparent border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-500 outline-none transition-all"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1.5">Priority</label>
+                <div className="flex space-x-3">
+                  {(["low", "medium", "high"] as const).map(p => (
+                    <button
+                      key={p}
+                      onClick={() => setNewPriority(p)}
+                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
+                        newPriority === p
+                          ? p === "high" ? "bg-red-500/10 border-red-500/50 text-red-500" 
+                            : p === "medium" ? "bg-yellow-500/10 border-yellow-500/50 text-yellow-600 dark:text-yellow-400"
+                            : "bg-blue-500/10 border-blue-500/50 text-blue-500"
+                          : "bg-transparent border-border text-gray-500 hover:bg-border/30"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

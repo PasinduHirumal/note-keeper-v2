@@ -19,6 +19,13 @@ export default function BookmarkCard({ bookmark, onDelete }: BookmarkCardProps) 
   } catch (e) {
   }
 
+  const priorityColors = {
+    high: "bg-red-500/10 text-red-500 border-red-500/20",
+    medium: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
+    low: "bg-blue-500/10 text-blue-500 border-blue-500/20"
+  };
+  const pColor = bookmark.priority ? priorityColors[bookmark.priority] : priorityColors.low;
+
   return (
     <a 
       href={bookmark.url}
@@ -33,16 +40,23 @@ export default function BookmarkCard({ bookmark, onDelete }: BookmarkCardProps) 
           </div>
           <h3 className="font-medium text-card-foreground truncate">{bookmark.title || domain}</h3>
         </div>
-        <button 
-          onClick={(e) => {
-            e.preventDefault();
-            onDelete(bookmark.id);
-          }} 
-          className="p-1.5 text-gray-500 hover:text-red-500 rounded-md transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100 shrink-0" 
-          title="Delete"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex flex-col items-end shrink-0 ml-2">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete(bookmark.id);
+            }} 
+            className="p-1.5 text-gray-500 hover:text-red-500 rounded-md transition-colors opacity-0 group-hover:opacity-100 sm:opacity-100 shrink-0" 
+            title="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+          {bookmark.priority && (
+            <span className={`mt-auto text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${pColor}`}>
+              {bookmark.priority}
+            </span>
+          )}
+        </div>
       </div>
       <div className="flex items-center text-sm text-gray-500 mt-auto pt-2">
         <ExternalLink className="w-3.5 h-3.5 mr-1.5 shrink-0" />

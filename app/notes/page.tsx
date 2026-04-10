@@ -14,6 +14,7 @@ export default function NotesPage() {
   
   const [isEditing, setIsEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -48,8 +49,15 @@ export default function NotesPage() {
   };
 
   const handleDelete = (id: string) => {
-    setNotes(notes.filter(n => n.id !== id));
-    toast.info("Note deleted");
+    setNoteToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (noteToDelete) {
+      setNotes(notes.filter(n => n.id !== noteToDelete));
+      toast.info("Note deleted");
+      setNoteToDelete(null);
+    }
   };
 
   const openEditor = (note?: Note) => {
@@ -146,6 +154,31 @@ export default function NotesPage() {
               >
                 <Save className="w-4 h-4 mr-2" />
                 Save Note
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {noteToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-60">
+          <div className="bg-card w-full max-w-sm rounded-2xl shadow-xl flex flex-col border border-border overflow-hidden transform transition-all">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Delete Note?</h3>
+              <p className="text-gray-500 text-sm">Are you sure you want to delete this note? This action cannot be undone.</p>
+            </div>
+            <div className="p-4 border-t border-border bg-sidebar flex justify-end space-x-3">
+              <button
+                onClick={() => setNoteToDelete(null)}
+                className="px-4 py-2 font-medium text-gray-600 hover:bg-border/50 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-all"
+              >
+                Delete
               </button>
             </div>
           </div>
