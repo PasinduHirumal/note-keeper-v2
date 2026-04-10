@@ -28,7 +28,7 @@ export default function LinkCard({ link, onEdit, onDelete }: LinkCardProps) {
   const pColor = link.priority ? priorityColors[link.priority] : priorityColors.low;
 
   return (
-    <a 
+    <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
@@ -49,24 +49,24 @@ export default function LinkCard({ link, onEdit, onDelete }: LinkCardProps) {
           </div>
         </div>
         <div className="flex space-x-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity absolute right-4 top-4 bg-card/80 backdrop-blur-sm rounded-md p-0.5 z-10">
-          <button 
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               onEdit(link);
-            }} 
-            className="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-md transition-colors shrink-0" 
+            }}
+            className="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-md transition-colors shrink-0"
             title="Edit link"
           >
             <Edit className="w-4 h-4" />
           </button>
-          <button 
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               onDelete(link.id);
-            }} 
-            className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors shrink-0" 
+            }}
+            className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors shrink-0"
             title="Delete link"
           >
             <Trash2 className="w-4 h-4" />

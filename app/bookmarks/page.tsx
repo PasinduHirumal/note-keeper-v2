@@ -17,7 +17,7 @@ export default function StarredNotesPage() {
   const [mounted, setMounted] = useState(false);
   const [notes, setNotes] = useLocalStorage<Note[]>("keeper-notes", []);
   const { toast } = useToast();
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function StarredNotesPage() {
       toast.error("Note content is required");
       return;
     }
-    
+
     if (currentNote.id) {
       setNotes(notes.map(n => n.id === currentNote.id ? {
         ...n,
@@ -62,7 +62,7 @@ export default function StarredNotesPage() {
   };
 
   const handleToggleBookmark = (id: string) => {
-    setNotes(notes.map(note => 
+    setNotes(notes.map(note =>
       note.id === id ? { ...note, isBookmarked: !note.isBookmarked } : note
     ));
     toast.info("Removed from Starred");
@@ -111,7 +111,7 @@ export default function StarredNotesPage() {
   });
 
   return (
-    <div className="p-8 h-full flex flex-col relative w-full">
+    <div className="p-4 h-full flex flex-col relative w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 w-full max-w-5xl mx-auto gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center">
@@ -148,23 +148,23 @@ export default function StarredNotesPage() {
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
         {starredNotes.length === 0 ? (
-          <EmptyState 
-             icon={<Star className="w-12 h-12 text-yellow-500 fill-current" />}
-             title="No notes found"
-             description="Click the star icon on any note to add it here." 
+          <EmptyState
+            icon={<Star className="w-12 h-12 text-yellow-500 fill-current" />}
+            title="No notes found"
+            description="Click the star icon on any note to add it here."
           />
         ) : filteredNotes.length === 0 ? (
           searchQuery.trim() ? (
-            <EmptyState 
-               icon={<Search className="w-10 h-10" />}
-               title="No matching notes found"
-               description={<>We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</>}
+            <EmptyState
+              icon={<Search className="w-10 h-10" />}
+              title="No matching notes found"
+              description={<>We couldn't find anything matching "{searchQuery}".<br />Try a different search term.</>}
             />
           ) : (
-            <EmptyState 
-               icon={<Inbox className="w-10 h-10" />}
-               title="No notes found"
-               description="There are no starred notes in this category."
+            <EmptyState
+              icon={<Inbox className="w-10 h-10" />}
+              title="No notes found"
+              description="There are no starred notes in this category."
             />
           )
         ) : (
@@ -192,7 +192,7 @@ export default function StarredNotesPage() {
         )}
       </div>
 
-      <NoteEditorModal 
+      <NoteEditorModal
         isOpen={isEditing}
         onClose={closeEditor}
         onSave={handleSave}
@@ -200,7 +200,7 @@ export default function StarredNotesPage() {
         onChange={setCurrentNote}
       />
 
-      <DeleteConfirmModal 
+      <DeleteConfirmModal
         isOpen={!!noteToDelete}
         onClose={() => setNoteToDelete(null)}
         onConfirm={confirmDelete}

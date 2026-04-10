@@ -42,7 +42,7 @@ export default function Sidebar() {
       createdAt: Date.now(),
       priority: priority,
     };
-    
+
     setLinksState([newSavedLink, ...linksState]);
     toast.success("Link saved quickly");
     setIsAdding(false);
@@ -82,9 +82,9 @@ export default function Sidebar() {
 
       {/* Mobile Overlay */}
       {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300" 
-          onClick={() => setIsMobileOpen(false)} 
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+          onClick={() => setIsMobileOpen(false)}
         />
       )}
 
@@ -107,14 +107,14 @@ export default function Sidebar() {
             </button>
           )}
         </div>
-        
+
         <div className="h-16 flex md:hidden items-center justify-between px-6 border-b border-border shrink-0">
           <span className="text-xl font-bold text-sidebar-foreground tracking-tight">Menu</span>
           <button onClick={() => setIsMobileOpen(false)} className="p-1.5 rounded-lg hover:bg-border/50 text-sidebar-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
-        
+
         <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
           {links.map((link) => {
             const isActive = pathname === link.href;
@@ -124,18 +124,15 @@ export default function Sidebar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMobileOpen(false)}
-                className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive 
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
+                className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                     : "hover:bg-sidebar-foreground/10"
-                }`}
+                  }`}
               >
-                <Icon className={`w-5 h-5 mr-3 transition-colors ${
-                  isActive ? "text-primary-foreground" : "text-gray-500 group-hover:text-sidebar-foreground"
-                }`} />
-                <span className={`font-medium ${
-                  isActive ? "text-primary-foreground" : "text-sidebar-foreground"
-                }`}>
+                <Icon className={`w-5 h-5 mr-3 transition-colors ${isActive ? "text-primary-foreground" : "text-gray-500 group-hover:text-sidebar-foreground"
+                  }`} />
+                <span className={`font-medium ${isActive ? "text-primary-foreground" : "text-sidebar-foreground"
+                  }`}>
                   {link.name}
                 </span>
               </Link>
@@ -152,7 +149,7 @@ export default function Sidebar() {
             <span>Quick Link</span>
           </button>
         </div>
-        
+
         <div className="p-4 border-t border-border flex items-center justify-center">
           <span className="text-xs text-sidebar-foreground font-medium opacity-60">
             Note Keeper V2

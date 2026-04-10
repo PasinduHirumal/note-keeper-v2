@@ -18,7 +18,7 @@ export default function LinksPage() {
   const [mounted, setMounted] = useState(false);
   const [links, setLinks] = useLocalStorage<SavedLink[]>("keeper-bookmarks", []);
   const { toast } = useToast();
-  
+
   const [isAdding, setIsAdding] = useState(false);
   const [currentLinkId, setCurrentLinkId] = useState<string | null>(null);
   const [newUrl, setNewUrl] = useState("");
@@ -64,7 +64,7 @@ export default function LinksPage() {
       setLinks([newLink, ...links]);
       toast.success("Link saved successfully");
     }
-    
+
     setIsAdding(false);
     setCurrentLinkId(null);
     setNewUrl("");
@@ -88,7 +88,7 @@ export default function LinksPage() {
   });
 
   return (
-    <div className="p-8 h-full flex flex-col relative w-full">
+    <div className="p-4 h-full flex flex-col relative w-full">
       <div className="flex justify-between items-end mb-8 w-full max-w-5xl mx-auto">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Saved Links</h1>
@@ -122,16 +122,16 @@ export default function LinksPage() {
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
         {links.length === 0 ? (
-          <EmptyState 
-             icon={<BookmarkMinus className="w-12 h-12" />}
-             title="No links saved"
-             description="Click 'Add Link' to save a new web page." 
+          <EmptyState
+            icon={<BookmarkMinus className="w-12 h-12" />}
+            title="No links saved"
+            description="Click 'Add Link' to save a new web page."
           />
         ) : filteredLinks.length === 0 ? (
-          <EmptyState 
-             icon={<Filter className="w-10 h-10" />}
-             title="No matching links"
-             description={`You have no links with ${activeTab} priority.`}
+          <EmptyState
+            icon={<Filter className="w-10 h-10" />}
+            title="No matching links"
+            description={`You have no links with ${activeTab} priority.`}
           />
         ) : (
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

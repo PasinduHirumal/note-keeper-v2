@@ -16,13 +16,13 @@ export default function NoteEditorModal({ isOpen, onClose, onSave, note, onChang
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
         >
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -37,7 +37,7 @@ export default function NoteEditorModal({ isOpen, onClose, onSave, note, onChang
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="p-6 flex flex-col space-y-4">
               <input
                 type="text"

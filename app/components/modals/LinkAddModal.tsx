@@ -22,13 +22,13 @@ export default function LinkAddModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
         >
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -41,7 +41,7 @@ export default function LinkAddModal({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="p-6 flex flex-col space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1.5 ">URL</label>
@@ -59,7 +59,7 @@ export default function LinkAddModal({
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1.5">Title (Optional)</label>
                 <input
@@ -78,13 +78,12 @@ export default function LinkAddModal({
                     <button
                       key={p}
                       onClick={() => setPriority(p)}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${
-                        priority === p
-                          ? p === "high" ? "bg-red-500/10 border-red-500/50 text-red-500" 
+                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium capitalize transition-all ${priority === p
+                          ? p === "high" ? "bg-red-500/10 border-red-500/50 text-red-500"
                             : p === "medium" ? "bg-yellow-500/10 border-yellow-500/50 text-yellow-600 dark:text-yellow-400"
-                            : "bg-blue-500/10 border-blue-500/50 text-blue-500"
+                              : "bg-blue-500/10 border-blue-500/50 text-blue-500"
                           : "bg-transparent border-border text-gray-500 hover:bg-border/30"
-                      }`}
+                        }`}
                     >
                       {p}
                     </button>
