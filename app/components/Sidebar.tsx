@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { BookMarked, StickyNote, LayoutDashboard, Sun, Moon, Plus, Menu, X, Star, Globe } from "lucide-react";
+import { BookMarked, StickyNote, Sun, Moon, Plus, Menu, X, Star, Globe } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -61,7 +62,7 @@ export default function Sidebar() {
       {/* Mobile Top Navigation Bar */}
       <div className="md:hidden shrink-0 w-full h-16 bg-sidebar backdrop-blur-2xl border-b border-border flex items-center justify-between px-4 z-30">
         <div className="flex items-center">
-          <LayoutDashboard className="w-6 h-6 text-primary mr-2" />
+          <Image src="/logo.png" alt="Keeper Logo" width={28} height={28} className="rounded-[8px] shadow-md mr-2.5" />
           <span className="text-xl font-bold text-foreground tracking-tight">Keeper</span>
         </div>
         <div className="flex items-center space-x-2">
@@ -91,7 +92,7 @@ export default function Sidebar() {
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 h-full bg-sidebar backdrop-blur-2xl border-r border-border flex flex-col transition-transform duration-300 shadow-2xl md:relative md:translate-x-0 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-16 hidden md:flex items-center justify-between px-6 border-b border-border shrink-0">
           <div className="flex items-center">
-            <LayoutDashboard className="w-6 h-6 text-primary mr-3" />
+            <Image src="/logo.png" alt="Keeper Logo" width={32} height={32} className="rounded-xl shadow-lg shadow-primary/20 mr-3 hidden sm:block" />
             <span className="text-xl font-bold text-sidebar-foreground tracking-tight">
               Keeper
             </span>
