@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: note-keeper-v2
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.x
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
+    healthCheckPath: /
