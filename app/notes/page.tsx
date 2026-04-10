@@ -9,6 +9,9 @@ import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import NoteEditorModal from "../components/modals/NoteEditorModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import TabNavigation from "../components/TabNavigation";
+import EmptyState from "../components/EmptyState";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function NotesPage() {
   const [mounted, setMounted] = useState(false);
@@ -133,47 +136,50 @@ export default function NotesPage() {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto mb-6 flex space-x-1 sm:space-x-2 border-b border-border/50 pb-px overflow-x-auto">
-        {(["all", "full", "untitled"] as const).map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap rounded-t-lg border-b-2 flex-1 sm:flex-none text-center ${
-              activeTab === tab
-                ? "border-primary text-primary bg-primary/10"
-                : "border-transparent text-gray-500 hover:text-foreground hover:bg-sidebar/50"
-            }`}
-          >
-            {tab === "all" && "All Notes"}
-            {tab === "full" && "Detailed Notes"}
-            {tab === "untitled" && "Content Only"}
-          </button>
-        ))}
-      </div>
+      <TabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        tabs={[
+          { id: "all", label: "All Notes" },
+          { id: "full", label: "Detailed Notes" },
+          { id: "untitled", label: "Content Only" },
+        ]}
+      />
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
         {notes.length === 0 ? (
-          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl text-gray-500 bg-sidebar/30">
-            <p className="text-lg font-medium mb-2">No notes yet</p>
-            <p className="text-sm">Click "New Note" to create your first note.</p>
-          </div>
+          <EmptyState 
+             title="No notes yet"
+             description="Click 'New Note' to create your first note." 
+          />
         ) : filteredNotes.length === 0 ? (
-          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl text-gray-500 bg-sidebar/30">
-            <p className="text-lg font-medium mb-2">No matching notes found</p>
-            <p className="text-sm text-center">We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</p>
-          </div>
+          <EmptyState 
+             icon={<Search className="w-10 h-10" />}
+             title="No matching notes found"
+             description={<>We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</>}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredNotes.map(note => (
-              <NoteCard
-                key={note.id}
-                note={note}
-                onEdit={openEditor}
-                onDelete={handleDelete}
-                onToggleBookmark={handleToggleBookmark}
-              />
-            ))}
-          </div>
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {filteredNotes.map(note => (
+                <motion.div
+                  key={note.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NoteCard
+                    note={note}
+                    onEdit={openEditor}
+                    onDelete={handleDelete}
+                    onToggleBookmark={handleToggleBookmark}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
 

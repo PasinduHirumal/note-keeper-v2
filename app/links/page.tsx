@@ -9,6 +9,10 @@ import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import LinkAddModal from "../components/modals/LinkAddModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
+import TabNavigation from "../components/TabNavigation";
+import EmptyState from "../components/EmptyState";
+import { Filter, BookmarkMinus } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function LinksPage() {
   const [mounted, setMounted] = useState(false);
@@ -79,43 +83,51 @@ export default function LinksPage() {
         </button>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto mb-6 flex space-x-1 sm:space-x-2 border-b border-border/50 pb-px overflow-x-auto">
-        {(["all", "high", "medium", "low"] as const).map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap rounded-t-lg border-b-2 flex-1 sm:flex-none text-center capitalize ${
-              activeTab === tab
-                ? "border-primary text-primary bg-primary/10"
-                : "border-transparent text-gray-500 hover:text-foreground hover:bg-sidebar/50"
-            }`}
-          >
-            {tab === "all" ? "All Links" : `${tab} Priority`}
-          </button>
-        ))}
-      </div>
+      <TabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        tabs={[
+          { id: "all", label: "All Links" },
+          { id: "high", label: "High Priority" },
+          { id: "medium", label: "Medium Priority" },
+          { id: "low", label: "Low Priority" },
+        ]}
+      />
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
         {links.length === 0 ? (
-          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl text-gray-500 bg-sidebar/30">
-            <p className="text-lg font-medium mb-2">No links saved</p>
-            <p className="text-sm">Click "Add Link" to save a new web page.</p>
-          </div>
+          <EmptyState 
+             icon={<BookmarkMinus className="w-12 h-12" />}
+             title="No links saved"
+             description="Click 'Add Link' to save a new web page." 
+          />
         ) : filteredLinks.length === 0 ? (
-          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl text-gray-500 bg-sidebar/30">
-            <p className="text-lg font-medium mb-2">No matching links</p>
-            <p className="text-sm">You have no links with {activeTab} priority.</p>
-          </div>
+          <EmptyState 
+             icon={<Filter className="w-10 h-10" />}
+             title="No matching links"
+             description={`You have no links with ${activeTab} priority.`}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredLinks.map(link => (
-              <LinkCard
-                key={link.id}
-                link={link}
-                onDelete={(id) => setLinkToDelete(id)}
-              />
-            ))}
-          </div>
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <AnimatePresence mode="popLayout">
+              {filteredLinks.map(link => (
+                <motion.div
+                  key={link.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <LinkCard
+                    key={link.id}
+                    link={link}
+                    onDelete={(id) => setLinkToDelete(id)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
 
