@@ -115,7 +115,11 @@ npm run lint     # Run ESLint
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the **MIT License** — free to use, modify, and distribute.
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
+
+See the [LICENSE](./LICENSE) file for full details.
 
 ---
 
