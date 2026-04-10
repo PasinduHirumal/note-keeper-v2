@@ -15,29 +15,27 @@
 }
 
 :root {
-  --background: #f8fafc;
+  --background: #f1f5f9;
   --foreground: #020617;
-  --sidebar: #ffffff;
+  --sidebar: rgba(255, 255, 255, 0.55);
   --sidebar-foreground: #0f172a;
-  --card: #ffffff;
+  --card: rgba(255, 255, 255, 0.65);
   --card-foreground: #0f172a;
   --primary: #4f46e5;
   --primary-foreground: #ffffff;
-  --border: #e2e8f0;
+  --border: rgba(255, 255, 255, 0.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
-    --sidebar: #121214;
-    --sidebar-foreground: #a1a1aa;
-    --card: #18181b;
-    --card-foreground: #fafafa;
-    --primary: #6366f1;
-    --primary-foreground: #ffffff;
-    --border: #27272a;
-  }
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --sidebar: rgba(15, 23, 42, 0.45);
+  --sidebar-foreground: #e2e8f0;
+  --card: rgba(30, 41, 59, 0.45);
+  --card-foreground: #f8fafc;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -46,6 +44,10 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.18) 0%, transparent 50%);
+  background-attachment: fixed;
 }
 
 * {

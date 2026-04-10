@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookMarked, StickyNote, LayoutDashboard } from "lucide-react";
+import { BookMarked, StickyNote, LayoutDashboard, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const links = [
     { name: "Notes", href: "/notes", icon: StickyNote },
@@ -13,7 +21,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 h-full bg-sidebar border-r border-border flex flex-col transition-all duration-300 shrink-0">
+    <aside className="w-64 h-full bg-sidebar backdrop-blur-2xl border-r border-border flex flex-col transition-all duration-300 shrink-0 shadow-2xl">
       <div className="h-16 flex items-center px-6 border-b border-border">
         <LayoutDashboard className="w-6 h-6 text-primary mr-3" />
         <span className="text-xl font-bold text-sidebar-foreground tracking-tight">
@@ -47,8 +55,19 @@ export default function Sidebar() {
         })}
       </nav>
       
-      <div className="p-4 border-t border-border text-xs text-sidebar-foreground text-center opacity-60">
-        Note Keeper V2
+      <div className="p-4 border-t border-border flex items-center justify-between">
+        <span className="text-xs text-sidebar-foreground font-medium opacity-60">
+          Note Keeper V2
+        </span>
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="p-1.5 rounded-full hover:bg-border/50 text-sidebar-foreground transition-all"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+        )}
       </div>
     </aside>
   );

@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Note } from "@/lib/types";
 import NoteCard from "../components/NoteCard";
-import { Plus, X, Save } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
+import Loader from "../components/Loader";
+import NoteEditorModal from "../components/modals/NoteEditorModal";
+import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
 export default function NotesPage() {
   const [mounted, setMounted] = useState(false);
@@ -15,14 +18,15 @@ export default function NotesPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleSave = () => {
-    if (!currentNote.title && !currentNote.content) {
-      toast.error("Please enter a title or content for your note");
+    if (!currentNote.content || !currentNote.content.trim()) {
+      toast.error("Note content is required");
       return;
     }
     
@@ -74,22 +78,41 @@ export default function NotesPage() {
     setCurrentNote({});
   };
 
-  if (!mounted) return null;
+  if (!mounted) return <Loader message="Loading Notes..." />;
+
+  const filteredNotes = notes.filter(note => 
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-8 h-full flex flex-col relative w-full">
-      <div className="flex justify-between items-end mb-8 w-full max-w-5xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 w-full max-w-5xl mx-auto gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">My Notes</h1>
-          <p className="text-gray-500 mt-1">Capture your thoughts and ideas.</p>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Capture your thoughts and ideas.</p>
         </div>
-        <button
-          onClick={() => openEditor()}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          New Note
-        </button>
+        <div className="flex w-full sm:w-auto items-center gap-3">
+          <div className="relative flex-1 sm:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-gray-500 outline-none transition-all shadow-sm"
+            />
+          </div>
+          <button
+            onClick={() => openEditor()}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
+          >
+            <Plus className="w-5 h-5 mr-2 shrink-0" />
+            New Note
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
@@ -98,9 +121,14 @@ export default function NotesPage() {
             <p className="text-lg font-medium mb-2">No notes yet</p>
             <p className="text-sm">Click "New Note" to create your first note.</p>
           </div>
+        ) : filteredNotes.length === 0 ? (
+          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl text-gray-500 bg-sidebar/30">
+            <p className="text-lg font-medium mb-2">No matching notes found</p>
+            <p className="text-sm text-center">We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {notes.map(note => (
+            {filteredNotes.map(note => (
               <NoteCard
                 key={note.id}
                 note={note}
@@ -112,78 +140,21 @@ export default function NotesPage() {
         )}
       </div>
 
-      {isEditing && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-card w-full max-w-2xl rounded-2xl shadow-xl flex flex-col border border-border overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b border-border bg-sidebar">
-              <h2 className="text-lg font-semibold text-foreground">
-                {currentNote.id ? "Edit Note" : "Create Note"}
-              </h2>
-              <button onClick={closeEditor} className="p-1 text-gray-500 hover:text-foreground rounded-md">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-6 flex flex-col space-y-4">
-              <input
-                type="text"
-                placeholder="Note Title"
-                value={currentNote.title || ""}
-                onChange={(e) => setCurrentNote({ ...currentNote, title: e.target.value })}
-                className="w-full text-xl font-bold bg-transparent border-none focus:ring-0 p-0 text-foreground placeholder:text-gray-400 outline-none"
-                autoFocus
-              />
-              <textarea
-                placeholder="Write your note here..."
-                value={currentNote.content || ""}
-                onChange={(e) => setCurrentNote({ ...currentNote, content: e.target.value })}
-                className="w-full h-64 resize-none bg-transparent border-none focus:ring-0 p-0 text-foreground placeholder:text-gray-500 outline-none leading-relaxed"
-              />
-            </div>
+      <NoteEditorModal 
+        isOpen={isEditing}
+        onClose={closeEditor}
+        onSave={handleSave}
+        note={currentNote}
+        onChange={setCurrentNote}
+      />
 
-            <div className="p-4 border-t border-border bg-sidebar flex justify-end space-x-3">
-              <button
-                onClick={closeEditor}
-                className="px-4 py-2 font-medium text-gray-600 hover:bg-border/50 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Note
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {noteToDelete && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-60">
-          <div className="bg-card w-full max-w-sm rounded-2xl shadow-xl flex flex-col border border-border overflow-hidden transform transition-all">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-2">Delete Note?</h3>
-              <p className="text-gray-500 text-sm">Are you sure you want to delete this note? This action cannot be undone.</p>
-            </div>
-            <div className="p-4 border-t border-border bg-sidebar flex justify-end space-x-3">
-              <button
-                onClick={() => setNoteToDelete(null)}
-                className="px-4 py-2 font-medium text-gray-600 hover:bg-border/50 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-all"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmModal 
+        isOpen={!!noteToDelete}
+        onClose={() => setNoteToDelete(null)}
+        onConfirm={confirmDelete}
+        title="Delete Note?"
+        message="Are you sure you want to delete this note? This action cannot be undone."
+      />
     </div>
   );
 }

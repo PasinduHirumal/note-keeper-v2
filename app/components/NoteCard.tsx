@@ -15,7 +15,7 @@ export default function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
   });
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-all duration-200 flex flex-col group">
+    <div className="bg-card backdrop-blur-2xl border border-border rounded-xl p-5 hover:shadow-lg transition-all duration-200 flex flex-col group shadow-xl">
       <div className="flex justify-between items-start mb-3">
         <h3 className="font-semibold text-lg text-card-foreground line-clamp-1 wrap-break-word">{note.title || "Untitled Note"}</h3>
         <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity sm:opacity-100">

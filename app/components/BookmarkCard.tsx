@@ -31,7 +31,7 @@ export default function BookmarkCard({ bookmark, onDelete }: BookmarkCardProps) 
       href={bookmark.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="bg-card border border-border rounded-xl p-4 flex flex-col hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
+      className="bg-card backdrop-blur-2xl border border-border rounded-xl p-4 flex flex-col hover:border-primary/50 hover:shadow-lg shadow-xl transition-all duration-200 group"
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center space-x-3 pr-4 overflow-hidden">
