@@ -17,7 +17,7 @@ export default function TabNavigation<T extends string>({
   onTabChange,
 }: TabNavigationProps<T>) {
   return (
-    <div className="w-full max-w-5xl mx-auto mb-6 flex space-x-1 sm:space-x-2 border-b border-border/50 pb-px overflow-x-auto">
+    <div className="w-full max-w-5xl mx-auto mb-6 flex space-x-1 sm:space-x-2 pb-px overflow-x-auto">
       {tabs.map((tab) => (
         <button
           key={tab.id}
