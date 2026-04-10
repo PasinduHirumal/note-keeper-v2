@@ -65,10 +65,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={`pointer-events-auto flex items-center justify-between p-4 rounded-xl shadow-2xl border w-80 backdrop-blur-xl transform transition-all duration-300 translate-y-0 opacity-100 ${
               t.type === "error"
-                ? "bg-red-500/10 border-red-500/30 text-red-500 dark:text-red-400"
+                ? "bg-white/90 dark:bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400"
                 : t.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-                : "bg-card/80 border-border text-foreground"
+                ? "bg-white/90 dark:bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                : "bg-white/90 dark:bg-card/80 border-border text-foreground"
             }`}
           >
             <div className="flex items-center space-x-3 break-words w-full pr-2">
