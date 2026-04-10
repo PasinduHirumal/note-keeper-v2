@@ -26,6 +26,10 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Keeper",
   },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   robots: {
     index: true,
     follow: true,
