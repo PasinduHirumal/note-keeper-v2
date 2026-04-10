@@ -4,9 +4,10 @@ export interface Note {
   content: string;
   createdAt: number;
   updatedAt: number;
+  isBookmarked?: boolean;
 }
 
-export interface Bookmark {
+export interface SavedLink {
   id: string;
   title: string;
   url: string;

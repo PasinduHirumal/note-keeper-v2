@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Globe } from "lucide-react";
 
-interface BookmarkAddModalProps {
+interface LinkAddModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (url: string, title: string, priority: "low" | "medium" | "high") => void;
@@ -15,9 +15,9 @@ interface BookmarkAddModalProps {
   setPriority: (v: "low" | "medium" | "high") => void;
 }
 
-export default function BookmarkAddModal({
+export default function LinkAddModal({
   isOpen, onClose, onSave, url, setUrl, title, setTitle, priority, setPriority
-}: BookmarkAddModalProps) {
+}: LinkAddModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -35,7 +35,7 @@ export default function BookmarkAddModal({
             className="bg-card backdrop-blur-2xl w-full max-w-md rounded-2xl shadow-2xl flex flex-col border border-border overflow-hidden"
           >
             <div className="flex justify-between items-center p-4 border-b border-border bg-sidebar/50">
-              <h2 className="text-lg font-semibold text-foreground">Add Bookmark</h2>
+              <h2 className="text-lg font-semibold text-foreground">Add Link</h2>
               <button onClick={onClose} className="p-1 text-gray-500 hover:text-foreground rounded-md transition-colors">
                 <X className="w-5 h-5" />
               </button>

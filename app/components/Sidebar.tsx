@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookMarked, StickyNote, LayoutDashboard, Sun, Moon, Plus, Menu, X } from "lucide-react";
+import { BookMarked, StickyNote, LayoutDashboard, Sun, Moon, Plus, Menu, X, Star, Globe } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Bookmark } from "@/lib/types";
+import { SavedLink } from "@/lib/types";
 import { useToast } from "@/lib/ToastContext";
-import BookmarkAddModal from "./modals/BookmarkAddModal";
+import LinkAddModal from "./modals/LinkAddModal";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export default function Sidebar() {
   const { toast } = useToast();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const [bookmarks, setBookmarks] = useLocalStorage<Bookmark[]>("keeper-bookmarks", []);
+  const [linksState, setLinksState] = useLocalStorage<SavedLink[]>("keeper-bookmarks", []);
   const [isAdding, setIsAdding] = useState(false);
   const [newUrl, setNewUrl] = useState("");
   const [newTitle, setNewTitle] = useState("");
@@ -34,7 +34,7 @@ export default function Sidebar() {
       finalUrl = 'https://' + finalUrl;
     }
 
-    const newBookmark: Bookmark = {
+    const newSavedLink: SavedLink = {
       id: crypto.randomUUID(),
       title: title || "",
       url: finalUrl,
@@ -42,8 +42,8 @@ export default function Sidebar() {
       priority: priority,
     };
     
-    setBookmarks([newBookmark, ...bookmarks]);
-    toast.success("Bookmark added quickly");
+    setLinksState([newSavedLink, ...linksState]);
+    toast.success("Link saved quickly");
     setIsAdding(false);
     setNewUrl("");
     setNewTitle("");
@@ -52,7 +52,8 @@ export default function Sidebar() {
 
   const links = [
     { name: "Notes", href: "/notes", icon: StickyNote },
-    { name: "Bookmarks", href: "/bookmarks", icon: BookMarked },
+    { name: "Starred", href: "/bookmarks", icon: Star },
+    { name: "Links", href: "/links", icon: Globe },
   ];
 
   return (
@@ -147,7 +148,7 @@ export default function Sidebar() {
             className="w-full flex items-center justify-center space-x-2 py-2 border border-dashed border-border hover:border-primary/50 hover:bg-primary/5 rounded-lg text-sm text-foreground font-medium transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>Quick Bookmark</span>
+            <span>Quick Link</span>
           </button>
         </div>
         
@@ -158,7 +159,7 @@ export default function Sidebar() {
         </div>
 
         {mounted && createPortal(
-          <BookmarkAddModal
+          <LinkAddModal
             isOpen={isAdding}
             onClose={() => setIsAdding(false)}
             onSave={handleSaveBookmark}

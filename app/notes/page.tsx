@@ -57,6 +57,12 @@ export default function NotesPage() {
     setNoteToDelete(id);
   };
 
+  const handleToggleBookmark = (id: string) => {
+    setNotes(notes.map(note => 
+      note.id === id ? { ...note, isBookmarked: !note.isBookmarked } : note
+    ));
+  };
+
   const confirmDelete = () => {
     if (noteToDelete) {
       setNotes(notes.filter(n => n.id !== noteToDelete));
@@ -83,14 +89,16 @@ export default function NotesPage() {
 
   const filteredNotes = notes.filter(note => {
     const query = searchQuery.toLowerCase();
-    const matchesSearch = note.title.toLowerCase().includes(query) || note.content.toLowerCase().includes(query);
+    const safeTitle = note.title || "";
+    const safeContent = note.content || "";
+    const matchesSearch = safeTitle.toLowerCase().includes(query) || safeContent.toLowerCase().includes(query);
     if (!matchesSearch) return false;
 
     if (activeTab === "full") {
-      return note.title.trim().length > 0;
+      return safeTitle.trim().length > 0;
     }
     if (activeTab === "untitled") {
-      return !note.title || note.title.trim().length === 0;
+      return safeTitle.trim().length === 0;
     }
     return true; // "all"
   });
@@ -162,6 +170,7 @@ export default function NotesPage() {
                 note={note}
                 onEdit={openEditor}
                 onDelete={handleDelete}
+                onToggleBookmark={handleToggleBookmark}
               />
             ))}
           </div>
