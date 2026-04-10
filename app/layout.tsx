@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} h-full antialiased flex overflow-hidden bg-background text-foreground transition-colors duration-500`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased flex overflow-hidden bg-background text-foreground transition-colors duration-500`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ToastProvider>
             <Sidebar />

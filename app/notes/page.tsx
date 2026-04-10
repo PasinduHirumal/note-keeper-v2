@@ -19,6 +19,7 @@ export default function NotesPage() {
   const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "full" | "untitled">("all");
 
   useEffect(() => {
     setMounted(true);
@@ -80,10 +81,19 @@ export default function NotesPage() {
 
   if (!mounted) return <Loader message="Loading Notes..." />;
 
-  const filteredNotes = notes.filter(note => 
-    note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    note.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredNotes = notes.filter(note => {
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = note.title.toLowerCase().includes(query) || note.content.toLowerCase().includes(query);
+    if (!matchesSearch) return false;
+
+    if (activeTab === "full") {
+      return note.title.trim().length > 0;
+    }
+    if (activeTab === "untitled") {
+      return !note.title || note.title.trim().length === 0;
+    }
+    return true; // "all"
+  });
 
   return (
     <div className="p-8 h-full flex flex-col relative w-full">
@@ -113,6 +123,24 @@ export default function NotesPage() {
             New Note
           </button>
         </div>
+      </div>
+
+      <div className="w-full max-w-5xl mx-auto mb-6 flex space-x-1 sm:space-x-2 border-b border-border/50 pb-px overflow-x-auto">
+        {(["all", "full", "untitled"] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap rounded-t-lg border-b-2 flex-1 sm:flex-none text-center ${
+              activeTab === tab
+                ? "border-primary text-primary bg-primary/10"
+                : "border-transparent text-gray-500 hover:text-foreground hover:bg-sidebar/50"
+            }`}
+          >
+            {tab === "all" && "All Notes"}
+            {tab === "full" && "Detailed Notes"}
+            {tab === "untitled" && "Content Only"}
+          </button>
+        ))}
       </div>
 
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
