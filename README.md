@@ -9,6 +9,8 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 
+### [🚀 Live Demo — notely-premium.vercel.app](https://notely-premium.vercel.app/)
+
 </div>
 
 ---
@@ -54,8 +56,8 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/PasinduHirumal/notely.git
-cd notely
+git clone https://github.com/PasinduHirumal/note-keeper-v2.git
+cd note-keeper-v2
 
 # 2. Install dependencies
 npm install
@@ -71,7 +73,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 📁 Project Structure
 
 ```
-notely/
+note-keeper-v2/
 ├── app/
 │   ├── components/         # Reusable UI components
 │   │   ├── Sidebar.tsx     # Navigation sidebar (with mobile menu)
@@ -93,14 +95,6 @@ notely/
 └── public/
     └── logo.png            # App logo / favicon
 ```
-
----
-
-## 📸 Screenshots
-
-> Coming soon — deploy and capture live screenshots!
-
----
 
 ## ⚙️ Available Scripts
 
@@ -126,6 +120,6 @@ See the [LICENSE](./LICENSE) file for full details.
 
 Built with ❤️ using **Next.js** + **Tailwind CSS** + **Framer Motion**
 
-[⭐ Star on GitHub](https://github.com/PasinduHirumal/notely)
+[⭐ Star on GitHub](https://github.com/PasinduHirumal/note-keeper-v2)
 
 </div>
