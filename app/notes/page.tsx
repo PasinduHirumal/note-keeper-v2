@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Note } from "@/lib/types";
 import NoteCard from "../components/NoteCard";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Inbox, FileQuestion } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import NoteEditorModal from "../components/modals/NoteEditorModal";
@@ -149,15 +149,24 @@ export default function NotesPage() {
       <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto pb-12">
         {notes.length === 0 ? (
           <EmptyState 
-             title="No notes yet"
+             icon={<FileQuestion className="w-12 h-12" />}
+             title="No notes found"
              description="Click 'New Note' to create your first note." 
           />
         ) : filteredNotes.length === 0 ? (
-          <EmptyState 
-             icon={<Search className="w-10 h-10" />}
-             title="No matching notes found"
-             description={<>We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</>}
-          />
+          searchQuery.trim() ? (
+            <EmptyState 
+               icon={<Search className="w-10 h-10" />}
+               title="No matching notes found"
+               description={<>We couldn't find anything matching "{searchQuery}".<br/>Try a different search term.</>}
+            />
+          ) : (
+            <EmptyState 
+               icon={<Inbox className="w-10 h-10" />}
+               title="No notes found"
+               description="There are no notes in this category."
+            />
+          )
         ) : (
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">

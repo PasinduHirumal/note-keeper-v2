@@ -20,6 +20,7 @@ export default function LinksPage() {
   const { toast } = useToast();
   
   const [isAdding, setIsAdding] = useState(false);
+  const [currentLinkId, setCurrentLinkId] = useState<string | null>(null);
   const [newUrl, setNewUrl] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [newPriority, setNewPriority] = useState<"low" | "medium" | "high">("low");
@@ -30,23 +31,42 @@ export default function LinksPage() {
     setMounted(true);
   }, []);
 
+  const handleEdit = (link: SavedLink) => {
+    setCurrentLinkId(link.id);
+    setNewUrl(link.url);
+    setNewTitle(link.title);
+    setNewPriority(link.priority || "low");
+    setIsAdding(true);
+  };
+
   const handleSave = (url: string, title: string, priority: "low" | "medium" | "high") => {
     let finalUrl = url;
     if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
       finalUrl = 'https://' + finalUrl;
     }
 
-    const newLink: SavedLink = {
-      id: crypto.randomUUID(),
-      title: title || "",
-      url: finalUrl,
-      createdAt: Date.now(),
-      priority: priority,
-    };
+    if (currentLinkId) {
+      setLinks(links.map(l => l.id === currentLinkId ? {
+        ...l,
+        url: finalUrl,
+        title: title || "",
+        priority: priority
+      } : l));
+      toast.success("Link updated successfully");
+    } else {
+      const newLink: SavedLink = {
+        id: crypto.randomUUID(),
+        title: title || "",
+        url: finalUrl,
+        createdAt: Date.now(),
+        priority: priority,
+      };
+      setLinks([newLink, ...links]);
+      toast.success("Link saved successfully");
+    }
     
-    setLinks([newLink, ...links]);
-    toast.success("Link saved successfully");
     setIsAdding(false);
+    setCurrentLinkId(null);
     setNewUrl("");
     setNewTitle("");
     setNewPriority("low");
@@ -75,7 +95,13 @@ export default function LinksPage() {
           <p className="text-gray-500 mt-1 text-sm sm:text-base">Save important web links for later reading.</p>
         </div>
         <button
-          onClick={() => setIsAdding(true)}
+          onClick={() => {
+            setCurrentLinkId(null);
+            setNewUrl("");
+            setNewTitle("");
+            setNewPriority("low");
+            setIsAdding(true);
+          }}
           className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
         >
           <Plus className="w-5 h-5 mr-2 shrink-0" />
@@ -122,6 +148,7 @@ export default function LinksPage() {
                   <LinkCard
                     key={link.id}
                     link={link}
+                    onEdit={handleEdit}
                     onDelete={(id) => setLinkToDelete(id)}
                   />
                 </motion.div>
@@ -133,7 +160,11 @@ export default function LinksPage() {
 
       <LinkAddModal
         isOpen={isAdding}
-        onClose={() => setIsAdding(false)}
+        isEditing={!!currentLinkId}
+        onClose={() => {
+          setIsAdding(false);
+          setCurrentLinkId(null);
+        }}
         onSave={handleSave}
         url={newUrl}
         setUrl={setNewUrl}
