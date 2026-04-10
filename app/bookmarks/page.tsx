@@ -148,7 +148,7 @@ export default function StarredNotesPage() {
 
       <TabNavigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => { setActiveTab(tab); setSearchQuery(""); }}
         tabs={[
           { id: "all", label: "All Starred" },
           { id: "full", label: "Detailed Notes" },

@@ -148,7 +148,7 @@ export default function NotesPage() {
 
       <TabNavigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => { setActiveTab(tab); setSearchQuery(""); }}
         tabs={[
           { id: "all", label: "All Notes" },
           { id: "full", label: "Detailed Notes" },

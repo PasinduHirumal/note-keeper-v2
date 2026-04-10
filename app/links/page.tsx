@@ -119,7 +119,7 @@ export default function LinksPage() {
 
       <TabNavigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => { setActiveTab(tab); }}
         tabs={[
           { id: "all", label: "All Links" },
           { id: "high", label: "High Priority" },
