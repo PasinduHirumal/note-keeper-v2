@@ -111,20 +111,6 @@ npm run build    # Build for production
 npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
-
----
-
-## 🌐 Deployment
-
-This app is deployed on **Vercel** with zero configuration.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/PasinduHirumal/note-keeper-v2)
-
-To deploy your own copy:
-1. Fork this repository
-2. Connect it to your [Vercel](https://vercel.com) account
-3. Click **Deploy** — no environment variables needed
-
 ---
 
 ## 📄 License
