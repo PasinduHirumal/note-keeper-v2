@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { VoiceNote } from "@/lib/types";
 import VoiceNoteCard from "../components/VoiceNoteCard";
-import { Mic, Search, AlertCircle } from "lucide-react";
+import { Mic, Search, AlertCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
@@ -20,10 +20,11 @@ export default function VoiceNotesClient() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "pinned">("all");
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -56,7 +57,7 @@ export default function VoiceNotesClient() {
       setNotes([newNote, ...notes]);
       toast.success("Voice note saved");
     }
-    
+
     setIsModalOpen(false);
     setEditingNoteId(null);
   };
@@ -71,6 +72,12 @@ export default function VoiceNotesClient() {
       toast.info("Voice note deleted");
       setNoteToDelete(null);
     }
+  };
+
+  const confirmDeleteAll = () => {
+    setNotes([]);
+    toast.info("All voice notes deleted");
+    setIsDeletingAll(false);
   };
 
   const handleTogglePin = (id: string) => {
@@ -95,10 +102,10 @@ export default function VoiceNotesClient() {
     notes.length === 0
       ? "empty-all"
       : filteredNotes.length === 0
-      ? searchQuery.trim()
-        ? "empty-search"
-        : "empty-tab"
-      : "notes-grid";
+        ? searchQuery.trim()
+          ? "empty-search"
+          : "empty-tab"
+        : "notes-grid";
 
   return (
     <div className="p-4 h-full flex flex-col relative w-full">
@@ -120,14 +127,25 @@ export default function VoiceNotesClient() {
               className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-gray-500 outline-none transition-all shadow-sm"
             />
           </div>
-          
-          <button
-            onClick={() => handleOpenModal()}
-            className="px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Mic className="w-5 h-5 mr-2 shrink-0" />
-            New Record
-          </button>
+
+          <div className="flex items-center gap-2">
+            {notes.length > 0 && (
+              <button
+                onClick={() => setIsDeletingAll(true)}
+                className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                title="Delete All Voice Notes"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={() => handleOpenModal()}
+              className="px-4 py-2 rounded-lg gap-2 font-medium shadow-sm transition-all flex items-center shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              <Mic className="w-5 h-5 shrink-0" />
+              <span className="hidden sm:block">New Record</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -196,7 +214,7 @@ export default function VoiceNotesClient() {
         </AnimatePresence>
       </div>
 
-      <VoiceNoteModal 
+      <VoiceNoteModal
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -213,6 +231,14 @@ export default function VoiceNotesClient() {
         onConfirm={confirmDelete}
         title="Delete Voice Note?"
         message="Are you sure you want to delete this voice note? This action cannot be undone."
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeletingAll}
+        onClose={() => setIsDeletingAll(false)}
+        onConfirm={confirmDeleteAll}
+        title="Delete All Voice Notes?"
+        message="Are you sure you want to delete all voice notes? This action will permanently remove all your voice recordings and cannot be undone."
       />
     </div>
   );

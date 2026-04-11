@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { SavedLink } from "@/lib/types";
 import LinkCard from "../components/LinkCard";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import LinkAddModal from "../components/modals/LinkAddModal";
@@ -25,6 +25,7 @@ export default function LinksPage() {
   const [newTitle, setNewTitle] = useState("");
   const [newPriority, setNewPriority] = useState<"low" | "medium" | "high">("low");
   const [linkToDelete, setLinkToDelete] = useState<string | null>(null);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "high" | "medium" | "low">("all");
 
   useEffect(() => {
@@ -80,6 +81,12 @@ export default function LinksPage() {
     }
   };
 
+  const confirmDeleteAll = () => {
+    setLinks([]);
+    toast.info("All links removed");
+    setIsDeletingAll(false);
+  };
+
   if (!mounted) return <Loader message="Loading Links..." />;
 
   const filteredLinks = links.filter(link => {
@@ -92,8 +99,8 @@ export default function LinksPage() {
     links.length === 0
       ? "empty-all"
       : filteredLinks.length === 0
-      ? "empty-tab"
-      : "links-grid";
+        ? "empty-tab"
+        : "links-grid";
 
   return (
     <div className="p-4 h-full flex flex-col relative w-full">
@@ -102,19 +109,30 @@ export default function LinksPage() {
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Saved Links</h1>
           <p className="text-gray-500 mt-1 text-sm sm:text-base">Save important web links for later reading.</p>
         </div>
-        <button
-          onClick={() => {
-            setCurrentLinkId(null);
-            setNewUrl("");
-            setNewTitle("");
-            setNewPriority("low");
-            setIsAdding(true);
-          }}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
-        >
-          <Plus className="w-5 h-5 mr-2 shrink-0" />
-          Add Link
-        </button>
+        <div className="flex items-center gap-2">
+          {links.length > 0 && (
+            <button
+              onClick={() => setIsDeletingAll(true)}
+              className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+              title="Delete All Links"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setCurrentLinkId(null);
+              setNewUrl("");
+              setNewTitle("");
+              setNewPriority("low");
+              setIsAdding(true);
+            }}
+            className="bg-primary hover:bg-primary/90 gap-2 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
+          >
+            <Plus className="w-5 h-5 shrink-0" />
+            <span className="hidden sm:block">Add Link</span>
+          </button>
+        </div>
       </div>
 
       <TabNavigation
@@ -198,6 +216,14 @@ export default function LinksPage() {
         onConfirm={confirmDelete}
         title="Remove Saved Link?"
         message="Are you sure you want to remove this link?"
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeletingAll}
+        onClose={() => setIsDeletingAll(false)}
+        onConfirm={confirmDeleteAll}
+        title="Remove All Links?"
+        message="Are you sure you want to remove all saved links? This action will permanently remove all your bookmarks and cannot be undone."
       />
     </div>
   );

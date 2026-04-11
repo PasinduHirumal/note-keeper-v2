@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Note } from "@/lib/types";
 import NoteCard from "../components/NoteCard";
-import { Plus, Search, Inbox, FileQuestion } from "lucide-react";
+import { Plus, Search, Inbox, FileQuestion, Trash2 } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
 import NoteEditorModal from "../components/modals/NoteEditorModal";
@@ -21,6 +21,7 @@ export default function NotesPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "full" | "untitled">("all");
 
@@ -77,6 +78,12 @@ export default function NotesPage() {
     }
   };
 
+  const confirmDeleteAll = () => {
+    setNotes([]);
+    toast.info("All notes deleted");
+    setIsDeletingAll(false);
+  };
+
   const openEditor = (note?: Note) => {
     if (note) {
       setCurrentNote(note);
@@ -114,10 +121,10 @@ export default function NotesPage() {
     notes.length === 0
       ? "empty-all"
       : filteredNotes.length === 0
-      ? searchQuery.trim()
-        ? "empty-search"
-        : "empty-tab"
-      : "notes-grid";
+        ? searchQuery.trim()
+          ? "empty-search"
+          : "empty-tab"
+        : "notes-grid";
 
   return (
     <div className="p-4 h-full flex flex-col relative w-full">
@@ -139,13 +146,24 @@ export default function NotesPage() {
               className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-gray-500 outline-none transition-all shadow-sm"
             />
           </div>
-          <button
-            onClick={() => openEditor()}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
-          >
-            <Plus className="w-5 h-5 mr-2 shrink-0" />
-            New Note
-          </button>
+          <div className="flex items-center gap-2">
+            {notes.length > 0 && (
+              <button
+                onClick={() => setIsDeletingAll(true)}
+                className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                title="Delete All Notes"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={() => openEditor()}
+              className="bg-primary hover:bg-primary/90 gap-2 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
+            >
+              <Plus className="w-5 h-5 shrink-0" />
+              <span className="hidden sm:block">New Note</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -229,6 +247,14 @@ export default function NotesPage() {
         onConfirm={confirmDelete}
         title="Delete Note?"
         message="Are you sure you want to delete this note? This action cannot be undone."
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeletingAll}
+        onClose={() => setIsDeletingAll(false)}
+        onConfirm={confirmDeleteAll}
+        title="Delete All Notes?"
+        message="Are you sure you want to delete all notes? This action will permanently remove all your notes and cannot be undone."
       />
     </div>
   );
