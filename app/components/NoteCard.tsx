@@ -1,7 +1,7 @@
 "use client";
 
 import { Note } from "@/lib/types";
-import { Edit, Trash2, Clock, Star } from "lucide-react";
+import { Edit, Trash2, Clock, Star, Download } from "lucide-react";
 
 interface NoteCardProps {
   note: Note;
@@ -14,6 +14,21 @@ export default function NoteCard({ note, onEdit, onDelete, onToggleBookmark }: N
   const dateStr = new Date(note.updatedAt).toLocaleDateString(undefined, {
     year: 'numeric', month: 'short', day: 'numeric'
   });
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const blob = new Blob([note.content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const filenameSafeTitle = (note.title || "Note").replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    a.download = `${filenameSafeTitle}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div
       onClick={() => onEdit(note)}
@@ -31,6 +46,13 @@ export default function NoteCard({ note, onEdit, onDelete, onToggleBookmark }: N
               <Star className={`w-4 h-4 ${note.isBookmarked ? 'fill-current' : ''}`} />
             </button>
           )}
+          <button
+            onClick={handleDownload}
+            className="p-1.5 text-gray-500 hover:text-blue-500 hover:bg-blue-500/10 rounded-md transition-colors"
+            title="Download Note"
+          >
+            <Download className="w-4 h-4" />
+          </button>
           <button
             onClick={(e) => { e.stopPropagation(); onEdit(note); }}
             className="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-md transition-colors"

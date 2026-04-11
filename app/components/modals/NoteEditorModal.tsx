@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Save } from "lucide-react";
+import { X, Save, Upload } from "lucide-react";
+import { useRef } from "react";
 import { Note } from "@/lib/types";
 
 interface NoteEditorModalProps {
@@ -13,6 +14,30 @@ interface NoteEditorModalProps {
 }
 
 export default function NoteEditorModal({ isOpen, onClose, onSave, note, onChange }: NoteEditorModalProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) { // 2MB safety margin
+      alert("Text file is too large!");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const parsedTitle = note.title ? note.title : file.name.replace(/\.[^/.]+$/, "");
+      onChange({ ...note, title: parsedTitle, content: text });
+    };
+    reader.readAsText(file);
+
+    if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -55,21 +80,39 @@ export default function NoteEditorModal({ isOpen, onClose, onSave, note, onChang
               />
             </div>
 
-            <div className="p-4 border-t border-border bg-sidebar/50 flex justify-end space-x-3">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 font-medium text-gray-600 dark:text-gray-400 hover:bg-border/50 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => onSave(note)}
-                disabled={!note.content || !note.content.trim()}
-                className="bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Note
-              </button>
+            <div className="p-4 border-t border-border bg-sidebar/50 flex justify-between items-center space-x-3">
+              <div>
+                 <button
+                   onClick={() => fileInputRef.current?.click()}
+                   className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-foreground hover:bg-border/50 rounded-lg transition-colors flex items-center"
+                 >
+                   <Upload className="w-4 h-4 mr-2" />
+                   Import .txt
+                 </button>
+                 <input 
+                   type="file" 
+                   accept=".txt,.md,.csv" 
+                   className="hidden" 
+                   ref={fileInputRef}
+                   onChange={handleImport}
+                 />
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 font-medium text-gray-600 dark:text-gray-400 hover:bg-border/50 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => onSave(note)}
+                  disabled={!note.content || !note.content.trim()}
+                  className="bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Note
+                </button>
+              </div>
             </div>
           </motion.div>
         </motion.div>
