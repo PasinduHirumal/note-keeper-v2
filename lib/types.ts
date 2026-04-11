@@ -14,3 +14,11 @@ export interface SavedLink {
   createdAt: number;
   priority?: "low" | "medium" | "high";
 }
+
+export interface VoiceNote {
+  id: string;
+  title: string;
+  audioData: string;
+  createdAt: number;
+  isPinned?: boolean;
+}

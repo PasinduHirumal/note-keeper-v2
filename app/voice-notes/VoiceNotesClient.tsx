@@ -2,114 +2,95 @@
 
 import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Note } from "@/lib/types";
-import NoteCard from "../components/NoteCard";
-import { Plus, Search, Inbox, FileQuestion } from "lucide-react";
+import { VoiceNote } from "@/lib/types";
+import VoiceNoteCard from "../components/VoiceNoteCard";
+import { Mic, Search, AlertCircle } from "lucide-react";
 import { useToast } from "@/lib/ToastContext";
 import Loader from "../components/Loader";
-import NoteEditorModal from "../components/modals/NoteEditorModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 import TabNavigation from "../components/TabNavigation";
 import EmptyState from "../components/EmptyState";
+import VoiceNoteModal from "../components/modals/VoiceNoteModal";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function NotesPage() {
+export default function VoiceNotesClient() {
   const [mounted, setMounted] = useState(false);
-  const [notes, setNotes] = useLocalStorage<Note[]>("notely-notes", []);
+  const [notes, setNotes] = useLocalStorage<VoiceNote[]>("notely-voicenotes", []);
   const { toast } = useToast();
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentNote, setCurrentNote] = useState<Partial<Note>>({});
-  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<"all" | "full" | "untitled">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "pinned">("all");
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
-  const handleSave = () => {
-    if (!currentNote.content || !currentNote.content.trim()) {
-      toast.error("Note content is required");
-      return;
-    }
+  const handleOpenModal = (noteId?: string) => {
+    setEditingNoteId(noteId || null);
+    setIsModalOpen(true);
+  };
 
-    if (currentNote.id) {
-      setNotes(notes.map(n => n.id === currentNote.id ? {
+  const currentEditingNote = editingNoteId ? notes.find(n => n.id === editingNoteId) : null;
+
+  const handleSaveModal = (title: string, audioData?: string) => {
+    if (editingNoteId && currentEditingNote) {
+      setNotes(notes.map(n => n.id === editingNoteId ? {
         ...n,
-        title: currentNote.title || "",
-        content: currentNote.content || "",
-        // eslint-disable-next-line react-hooks/purity
-        updatedAt: Date.now()
+        title: title || n.title
       } : n));
-      toast.success("Note updated successfully");
-    } else {
-      const newNote: Note = {
+      toast.success("Voice note title updated");
+    } else if (audioData) {
+      const newNote: VoiceNote = {
         id: crypto.randomUUID(),
-        title: currentNote.title || "",
-        content: currentNote.content || "",
+        title: title,
+        audioData,
         // eslint-disable-next-line react-hooks/purity
         createdAt: Date.now(),
-        // eslint-disable-next-line react-hooks/purity
-        updatedAt: Date.now(),
+        isPinned: false
       };
       setNotes([newNote, ...notes]);
-      toast.success("Note created successfully");
+      toast.success("Voice note saved");
     }
-    closeEditor();
+    
+    setIsModalOpen(false);
+    setEditingNoteId(null);
   };
 
   const handleDelete = (id: string) => {
     setNoteToDelete(id);
   };
 
-  const handleToggleBookmark = (id: string) => {
-    setNotes(notes.map(note =>
-      note.id === id ? { ...note, isBookmarked: !note.isBookmarked } : note
-    ));
-  };
-
   const confirmDelete = () => {
     if (noteToDelete) {
       setNotes(notes.filter(n => n.id !== noteToDelete));
-      toast.info("Note deleted");
+      toast.info("Voice note deleted");
       setNoteToDelete(null);
     }
   };
 
-  const openEditor = (note?: Note) => {
-    if (note) {
-      setCurrentNote(note);
-    } else {
-      setCurrentNote({});
-    }
-    setIsEditing(true);
+  const handleTogglePin = (id: string) => {
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, isPinned: !note.isPinned } : note
+    ));
   };
 
-  const closeEditor = () => {
-    setIsEditing(false);
-    setCurrentNote({});
-  };
-
-  if (!mounted) return <Loader message="Loading Notes..." />;
+  if (!mounted) return <Loader message="Loading Voice Notes..." />;
 
   const filteredNotes = notes.filter(note => {
-    const query = searchQuery.toLowerCase();
-    const safeTitle = note.title || "";
-    const safeContent = note.content || "";
-    const matchesSearch = safeTitle.toLowerCase().includes(query) || safeContent.toLowerCase().includes(query);
+    const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
 
-    if (activeTab === "full") {
-      return safeTitle.trim().length > 0;
+    if (activeTab === "pinned") {
+      return note.isPinned;
     }
-    if (activeTab === "untitled") {
-      return safeTitle.trim().length === 0;
-    }
-    return true; // "all"
+    return true;
   });
 
-  // Compute a stable key so AnimatePresence can fade between states
   const contentKey =
     notes.length === 0
       ? "empty-all"
@@ -123,8 +104,8 @@ export default function NotesPage() {
     <div className="p-4 h-full flex flex-col relative w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 w-full max-w-5xl mx-auto gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">My Notes</h1>
-          <p className="text-gray-500 mt-1 text-sm sm:text-base">Capture your thoughts and ideas.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Voice Notes</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Record your thoughts instantly.</p>
         </div>
         <div className="flex w-full sm:w-auto items-center gap-3">
           <div className="relative flex-1 sm:w-64">
@@ -133,29 +114,29 @@ export default function NotesPage() {
             </div>
             <input
               type="text"
-              placeholder="Search notes..."
+              placeholder="Search voice notes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-gray-500 outline-none transition-all shadow-sm"
             />
           </div>
+          
           <button
-            onClick={() => openEditor()}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0"
+            onClick={() => handleOpenModal()}
+            className="px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            <Plus className="w-5 h-5 mr-2 shrink-0" />
-            New Note
+            <Mic className="w-5 h-5 mr-2 shrink-0" />
+            New Record
           </button>
         </div>
       </div>
 
       <TabNavigation
         activeTab={activeTab}
-        onTabChange={(tab) => { setActiveTab(tab); setSearchQuery(""); }}
+        onTabChange={(tab) => { setActiveTab(tab as "all" | "pinned"); setSearchQuery(""); }}
         tabs={[
           { id: "all", label: "All Notes" },
-          { id: "full", label: "Detailed Notes" },
-          { id: "untitled", label: "Content Only" },
+          { id: "pinned", label: "Pinned" },
         ]}
       />
 
@@ -164,9 +145,9 @@ export default function NotesPage() {
           {contentKey === "empty-all" ? (
             <EmptyState
               key="empty-all"
-              icon={<FileQuestion className="w-12 h-12" />}
-              title="No notes yet"
-              description="Click 'New Note' to create your first note."
+              icon={<Mic className="w-12 h-12" />}
+              title="No voice notes yet"
+              description="Click 'New Record' to capture your first audio memo."
             />
           ) : contentKey === "empty-search" ? (
             <EmptyState
@@ -178,9 +159,9 @@ export default function NotesPage() {
           ) : contentKey === "empty-tab" ? (
             <EmptyState
               key="empty-tab"
-              icon={<Inbox className="w-10 h-10" />}
-              title="No notes here"
-              description="There are no notes in this category."
+              icon={<AlertCircle className="w-10 h-10" />}
+              title="No pinned notes"
+              description="You have no pinned voice notes."
             />
           ) : (
             <motion.div
@@ -201,11 +182,11 @@ export default function NotesPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <NoteCard
+                    <VoiceNoteCard
                       note={note}
-                      onEdit={openEditor}
+                      onEdit={() => handleOpenModal(note.id)}
                       onDelete={handleDelete}
-                      onToggleBookmark={handleToggleBookmark}
+                      onTogglePin={handleTogglePin}
                     />
                   </motion.div>
                 ))}
@@ -215,20 +196,23 @@ export default function NotesPage() {
         </AnimatePresence>
       </div>
 
-      <NoteEditorModal
-        isOpen={isEditing}
-        onClose={closeEditor}
-        onSave={handleSave}
-        note={currentNote}
-        onChange={setCurrentNote}
+      <VoiceNoteModal 
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingNoteId(null);
+        }}
+        onSave={handleSaveModal}
+        isEditing={!!editingNoteId}
+        initialTitle={currentEditingNote?.title}
       />
 
       <DeleteConfirmModal
         isOpen={!!noteToDelete}
         onClose={() => setNoteToDelete(null)}
         onConfirm={confirmDelete}
-        title="Delete Note?"
-        message="Are you sure you want to delete this note? This action cannot be undone."
+        title="Delete Voice Note?"
+        message="Are you sure you want to delete this voice note? This action cannot be undone."
       />
     </div>
   );

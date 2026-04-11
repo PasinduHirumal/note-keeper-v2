@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { BookMarked, StickyNote, Sun, Moon, Plus, Menu, X, Star, Globe } from "lucide-react";
+import { BookMarked, StickyNote, Sun, Moon, Plus, Menu, X, Star, Globe, Mic } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -53,6 +53,7 @@ export default function Sidebar() {
 
   const links = [
     { name: "Notes", href: "/notes", icon: StickyNote },
+    { name: "Voice Notes", href: "/voice-notes", icon: Mic },
     { name: "Starred", href: "/bookmarks", icon: Star },
     { name: "Links", href: "/links", icon: Globe },
   ];
@@ -125,8 +126,8 @@ export default function Sidebar() {
                 href={link.href}
                 onClick={() => setIsMobileOpen(false)}
                 className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                    : "hover:bg-sidebar-foreground/10"
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                  : "hover:bg-sidebar-foreground/10"
                   }`}
               >
                 <Icon className={`w-5 h-5 mr-3 transition-colors ${isActive ? "text-primary-foreground" : "text-gray-500 group-hover:text-sidebar-foreground"
@@ -152,7 +153,7 @@ export default function Sidebar() {
 
         <div className="p-4 border-t border-border flex items-center justify-center">
           <span className="text-xs text-sidebar-foreground font-medium opacity-60">
-            Notely v1.0
+            Notely v2.0
           </span>
         </div>
 

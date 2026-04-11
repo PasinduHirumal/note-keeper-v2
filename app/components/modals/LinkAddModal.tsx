@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Globe } from "lucide-react";
+import { X, Globe, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 interface LinkAddModalProps {
   isOpen: boolean;
@@ -19,6 +20,42 @@ interface LinkAddModalProps {
 export default function LinkAddModal({
   isOpen, isEditing, onClose, onSave, url, setUrl, title, setTitle, priority, setPriority
 }: LinkAddModalProps) {
+  const [isFetching, setIsFetching] = useState(false);
+
+  const handleSaveClick = async () => {
+    if (!url.trim()) return;
+
+    let finalTitle = title;
+    if (!finalTitle.trim() && !isEditing) {
+      setIsFetching(true);
+      try {
+        const res = await fetch(`/api/fetch-metadata?url=${encodeURIComponent(url)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.title) {
+            finalTitle = data.title;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch title", err);
+      } finally {
+        setIsFetching(false);
+      }
+    }
+    
+    // Default to URL hostname if title still empty
+    if (!finalTitle.trim()) {
+      try {
+        const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+        finalTitle = urlObj.hostname;
+      } catch (e) {
+        finalTitle = url;
+      }
+    }
+    
+    onSave(url, finalTitle, priority);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -100,11 +137,11 @@ export default function LinkAddModal({
                 Cancel
               </button>
               <button
-                onClick={() => onSave(url, title, priority)}
-                disabled={!url.trim()}
-                className="bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-lg font-medium shadow-sm transition-all"
+                onClick={handleSaveClick}
+                disabled={!url.trim() || isFetching}
+                className="bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 text-primary-foreground px-5 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center justify-center min-w-[80px]"
               >
-                Save
+                {isFetching ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save"}
               </button>
             </div>
           </motion.div>
