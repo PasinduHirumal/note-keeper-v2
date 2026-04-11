@@ -28,7 +28,7 @@ export default function NoteEditorModal({ isOpen, onClose, onSave, note, onChang
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      const parsedTitle = note.title ? note.title : file.name.replace(/\.[^/.]+$/, "");
+      const parsedTitle = file.name.replace(/\.[^/.]+$/, "");
       onChange({ ...note, title: parsedTitle, content: text });
     };
     reader.readAsText(file);

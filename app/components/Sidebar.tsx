@@ -153,7 +153,7 @@ export default function Sidebar() {
 
         <div className="p-4 border-t border-border flex items-center justify-center">
           <span className="text-xs text-sidebar-foreground font-medium opacity-60">
-            Notely v2.0
+            Notely v2.1
           </span>
         </div>
 
