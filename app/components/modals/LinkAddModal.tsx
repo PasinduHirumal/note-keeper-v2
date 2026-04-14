@@ -48,7 +48,7 @@ export default function LinkAddModal({
       try {
         const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
         finalTitle = urlObj.hostname;
-      } catch (e) {
+      } catch {
         finalTitle = url;
       }
     }

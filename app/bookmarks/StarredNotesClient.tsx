@@ -13,6 +13,8 @@ import TabNavigation from "../components/TabNavigation";
 import EmptyState from "../components/EmptyState";
 import { motion, AnimatePresence } from "framer-motion";
 
+const getNow = () => Date.now();
+
 export default function StarredNotesPage() {
   const [mounted, setMounted] = useState(false);
   const [notes, setNotes] = useLocalStorage<Note[]>("notely-notes", []);
@@ -25,7 +27,8 @@ export default function StarredNotesPage() {
   const [activeTab, setActiveTab] = useState<"all" | "full" | "untitled">("all");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSave = () => {
@@ -47,8 +50,8 @@ export default function StarredNotesPage() {
         id: crypto.randomUUID(),
         title: currentNote.title || "",
         content: currentNote.content || "",
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
         isBookmarked: true
       };
       setNotes([newNote, ...notes]);

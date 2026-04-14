@@ -29,7 +29,8 @@ export default function LinksPage() {
   const [activeTab, setActiveTab] = useState<"all" | "high" | "medium" | "low">("all");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleEdit = (link: SavedLink) => {

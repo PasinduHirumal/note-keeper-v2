@@ -39,8 +39,27 @@ export default function VoiceNoteModal({
 
   const { toast } = useToast();
 
+  function cleanupVisualizer() {
+    if (recordingAnimRef.current) cancelAnimationFrame(recordingAnimRef.current);
+    if (recordingContextRef.current && recordingContextRef.current.state !== 'closed') {
+      recordingContextRef.current.close().catch(e => console.error(e));
+    }
+    recordingContextRef.current = null;
+    recordingAnalyserRef.current = null;
+  }
+
+  function handleStopRecording() {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (timerRef.current) clearInterval(timerRef.current);
+      cleanupVisualizer();
+    }
+  }
+
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(initialTitle);
       setAudioDataUrl(existingAudioData || null);
       setIsRecording(false);
@@ -53,18 +72,10 @@ export default function VoiceNoteModal({
       }
       cleanupVisualizer();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, initialTitle, existingAudioData]);
 
-  const cleanupVisualizer = () => {
-    if (recordingAnimRef.current) cancelAnimationFrame(recordingAnimRef.current);
-    if (recordingContextRef.current && recordingContextRef.current.state !== 'closed') {
-      recordingContextRef.current.close().catch(e => console.error(e));
-    }
-    recordingContextRef.current = null;
-    recordingAnalyserRef.current = null;
-  };
-
-  const drawLiveVisualizer = () => {
+  function drawLiveVisualizer() {
     if (!recordingAnalyserRef.current || !analyzerCanvasRef.current) return;
     
     const canvas = analyzerCanvasRef.current;
@@ -102,7 +113,7 @@ export default function VoiceNoteModal({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
       // Setup Visualizer
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const audioCtx = new AudioContextClass();
       const analyser = audioCtx.createAnalyser();
       analyser.fftSize = 64;
@@ -157,14 +168,7 @@ export default function VoiceNoteModal({
     }
   };
 
-  const handleStopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-      cleanupVisualizer();
-    }
-  };
+
 
   const discardRecording = () => {
     setAudioDataUrl(null);

@@ -1,7 +1,7 @@
 "use client";
 
 import { Note } from "@/lib/types";
-import { Edit, Trash2, Clock, Star, Download } from "lucide-react";
+import { Edit, Trash2, Star, Download } from "lucide-react";
 
 interface NoteCardProps {
   note: Note;

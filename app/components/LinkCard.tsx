@@ -17,7 +17,7 @@ export default function LinkCard({ link, onEdit, onDelete }: LinkCardProps) {
   let domain = link.url;
   try {
     domain = new URL(link.url).hostname.replace('www.', '');
-  } catch (e) {
+  } catch {
   }
 
   const priorityColors = {

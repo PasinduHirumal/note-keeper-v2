@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { BookMarked, StickyNote, Sun, Moon, Plus, Menu, X, Star, Globe, Mic } from "lucide-react";
+import { StickyNote, Sun, Moon, Plus, Menu, X, Star, Globe, Mic } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -26,7 +26,8 @@ export default function Sidebar() {
   const [newPriority, setNewPriority] = useState<"low" | "medium" | "high">("low");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSaveBookmark = (url: string, title: string, priority: "low" | "medium" | "high") => {

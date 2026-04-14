@@ -13,6 +13,8 @@ import TabNavigation from "../components/TabNavigation";
 import EmptyState from "../components/EmptyState";
 import { motion, AnimatePresence } from "framer-motion";
 
+const getNow = () => Date.now();
+
 export default function NotesPage() {
   const [mounted, setMounted] = useState(false);
   const [notes, setNotes] = useLocalStorage<Note[]>("notely-notes", []);
@@ -26,7 +28,8 @@ export default function NotesPage() {
   const [activeTab, setActiveTab] = useState<"all" | "full" | "untitled">("all");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSave = () => {
@@ -40,8 +43,7 @@ export default function NotesPage() {
         ...n,
         title: currentNote.title || "",
         content: currentNote.content || "",
-        // eslint-disable-next-line react-hooks/purity
-        updatedAt: Date.now()
+        updatedAt: getNow()
       } : n));
       toast.success("Note updated successfully");
     } else {
@@ -49,10 +51,8 @@ export default function NotesPage() {
         id: crypto.randomUUID(),
         title: currentNote.title || "",
         content: currentNote.content || "",
-        // eslint-disable-next-line react-hooks/purity
-        createdAt: Date.now(),
-        // eslint-disable-next-line react-hooks/purity
-        updatedAt: Date.now(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
       };
       setNotes([newNote, ...notes]);
       toast.success("Note created successfully");

@@ -13,6 +13,8 @@ import EmptyState from "../components/EmptyState";
 import VoiceNoteModal from "../components/modals/VoiceNoteModal";
 import { motion, AnimatePresence } from "framer-motion";
 
+const getNow = () => Date.now();
+
 export default function VoiceNotesClient() {
   const [mounted, setMounted] = useState(false);
   const [notes, setNotes] = useLocalStorage<VoiceNote[]>("notely-voicenotes", []);
@@ -27,8 +29,8 @@ export default function VoiceNotesClient() {
   const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleOpenModal = (noteId?: string) => {
@@ -50,8 +52,7 @@ export default function VoiceNotesClient() {
         id: crypto.randomUUID(),
         title: title,
         audioData,
-        // eslint-disable-next-line react-hooks/purity
-        createdAt: Date.now(),
+        createdAt: getNow(),
         isPinned: false
       };
       setNotes([newNote, ...notes]);

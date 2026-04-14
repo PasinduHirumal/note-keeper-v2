@@ -58,7 +58,7 @@ export default function VoiceNoteCard({ note, onEdit, onDelete, onTogglePin }: V
 
   const initAudioContext = () => {
     if (!audioContextRef.current && audioRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = new AudioContextClass();
       audioContextRef.current = ctx;
 
